@@ -1,0 +1,1 @@
+<? $this->breadcrumbs = array('Панель управления'); ?>

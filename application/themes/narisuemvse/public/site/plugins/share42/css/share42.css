@@ -1,0 +1,20 @@
+.share42-item {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.share42-item a {
+	display: block;
+	width: 22px;
+	height: 22px;
+	margin: 0 3px;
+	background: url('../img/icons.png') no-repeat;
+	transition: opacity 0.3s ease 0s;
+}
+
+.share42-item a[data-count="vk"] {background-position: left top;}
+.share42-item a[data-count="fb"] {background-position: -22px top;}
+.share42-item a[data-count="twi"] {background-position: -44px top;}
+.share42-item a[data-count="odkl"] {background-position: -66px top;}
+
+.share42-item a:hover {opacity: 0.8;}

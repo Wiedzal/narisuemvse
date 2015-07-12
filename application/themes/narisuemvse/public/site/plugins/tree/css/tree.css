@@ -1,0 +1,17 @@
+/*START MAIN TREE CSS*/
+.row-container.expanded .tc-element { background-image: url(../img/minus.png); }
+/* closed is higher priority than open */
+.row-container.collapsed .tc-element { background-image: url(../img/plus.png); }
+/* highest priority */
+.row-container .tc-element { background-image: url(../img/leaf.png); }
+
+.tc-element { width: 20px; height: 20px; float: left; /margin-right: 10px;/ }
+.tc-text { overflow: hidden; margin-left: 25px;}
+
+.row-container.expanded .tc-element, .row-container.collapsed .tc-element { cursor: pointer; }
+.row-container .tc-element { cursor: auto; }
+
+.row-container .tc-element-loading { width: 20px; height: 20px; float: left; margin-right: 10px; background-image: url(../img/expand_loading.png); }
+#nav_tree tbody tr.nth-even {background:#edebeb;}
+#nav_tree tbody tr.nth-odd {background:#f6f6f6;}
+/*END MAIN TREE CSS*/

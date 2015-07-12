@@ -1,0 +1,44 @@
+@font-face {
+    font-family: 'PF Agora Sans Pro';
+    src: url('light/pfagorasanspro-light-webfont.eot');
+    src: url('light/pfagorasanspro-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('light/pfagorasanspro-light-webfont.woff2') format('woff2'),
+         url('light/pfagorasanspro-light-webfont.woff') format('woff'),
+         url('light/pfagorasanspro-light-webfont.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PF Agora Sans Pro';
+    src: url('regular/pfagorasanspro-reg-webfont.eot');
+    src: url('regular/pfagorasanspro-reg-webfont.eot?#iefix') format('embedded-opentype'),
+         url('regular/pfagorasanspro-reg-webfont.woff2') format('woff2'),
+         url('regular/pfagorasanspro-reg-webfont.woff') format('woff'),
+         url('regular/pfagorasanspro-reg-webfont.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PF Agora Sans Pro';
+    src: url('medium/pfagorasanspro-medium-webfont.eot');
+    src: url('medium/pfagorasanspro-medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('medium/pfagorasanspro-medium-webfont.woff2') format('woff2'),
+         url('medium/pfagorasanspro-medium-webfont.woff') format('woff'),
+         url('medium/pfagorasanspro-medium-webfont.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PF Agora Sans Pro';
+    src: url('bold/pfagorasanspro-bold-webfont.eot');
+    src: url('bold/pfagorasanspro-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('bold/pfagorasanspro-bold-webfont.woff2') format('woff2'),
+         url('bold/pfagorasanspro-bold-webfont.woff') format('woff'),
+         url('bold/pfagorasanspro-bold-webfont.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+
+}

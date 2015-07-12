@@ -1,0 +1,30 @@
+body {
+	background: url('../img/bg-paper.jpg') no-repeat fixed center center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-ms-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.super-wrapper {
+	min-height: 100%;
+}
+
+.wrapper {
+	width: 1000px;
+	margin: 0 auto;
+	position: relative;
+	padding: 0 15px;
+}
+
+.settings {
+	padding: 30px;
+}
+
+.settings .super-wrapper {
+	background: #fff;
+	padding: 30px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	margin-bottom: 30px;
+}

@@ -1,0 +1,157 @@
+.vix-caption {display: none;}
+
+.vix-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: none;
+	cursor: pointer;
+}
+
+.vix-modal-wrap {
+	position: relative;
+	width: 960px;
+	margin: 30px auto;
+	padding: 5px;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.2);
+	cursor: auto;
+}
+
+.vix-modal {
+	width: 950px;
+	padding: 30px;
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 7px;
+}
+
+/* modal-title */
+
+.vix-modal-title {
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.vix-title-caption {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-size: 15px;
+}
+
+.vix-modal-title:after {
+	content: "";
+	display: block;
+	margin-top: 20px;
+	border-top: 1px solid #dedede;
+	border-bottom: 1px solid #fff;
+}
+
+.vix-close {
+	width: 9px;
+	height: 9px;
+	position: absolute;
+	top: -9px;
+	right: -9px;
+	background: url('../img/remove-icon.png') no-repeat;
+	opacity: 0.3;
+	-webkit-transition: opacity 0.3s ease 0s;
+	-moz-transition: opacity 0.3s ease 0s;
+	-ms-transition: opacity 0.3s ease 0s;
+	-o-transition: opacity 0.3s ease 0s;
+	transition: opacity 0.3s ease 0s;
+	display: block;
+}
+
+.vix-close:hover {
+	opacity: 0.6;
+	cursor: pointer;
+}
+
+/* modal-body */
+
+.vix-modal-body {
+	position: relative;
+}
+
+.vix-body-top {
+	position: relative;
+	padding: 0 70px;
+	min-height: 100px;
+}
+
+.vix-btn{
+	width: 50px;
+	height:50px;
+	border-radius: 100%;
+	-webkit-transition: background-color 0.3s ease 0s;
+	-moz-transition: background-color 0.3s ease 0s;
+	-ms-transition: background-color 0.3s ease 0s;
+	-o-transition: background-color 0.3s ease 0s;
+	transition: background-color 0.3s ease 0s;
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	margin-top: -25px;
+	transition: top 0.3s ease 0s;
+}
+
+.vix-btn-prev {background:url('../img/vix-btn-prev.png') no-repeat center center #eef1f5; left: 0;}
+.vix-btn-next {background:url('../img/vix-btn-next.png') no-repeat center center #eef1f5; right: 0;}
+
+.vix-btn-prev:hover, 
+.vix-btn-next:hover {
+	background-color: #dee8f5;
+}
+
+.vix-loader {
+	width: 32px;
+	height: 32px;
+	background: url('../img/loader.gif') no-repeat center center;
+	display: none;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -16px 0 0 -16px;
+}
+
+.vix-image {
+	max-width: 100%;
+	display: block;
+	margin: 0 auto;
+}
+
+.vix-image-caption {
+	font-size: 15px;
+	margin: 30px 0;
+}
+
+/* modal-body */
+
+.vix-modal-footer {
+	padding: 20px 30px;
+	border-top: 1px solid #e1e8f2;
+	background: #eef1f5;
+	margin: 0 -30px -30px;
+	border-radius: 0 0 7px 7px;
+}
+
+.vix-modal-footer:after {
+	content: "";
+	clear: both;
+	display: block;
+}
+
+.vix-image-date {
+	float: left;
+	max-width: 50%;
+}
+
+.vix-image-actions {
+	float: right;
+	max-width: 50%;
+}

@@ -1,0 +1,21 @@
+.vix-button-icon {
+	display: inline-block;
+	font: normal normal normal 12px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+	width: 16px;
+	height: 16px;
+	text-align: center;
+}
+
+.ui-state-disabled .vix-button-icon {
+	color: #999;
+}
+
+.vix-icon-back:before {content: "\f060";}
+.vix-icon-forward:before {content: "\f061";}
+.vix-icon-mkdir:before {content: "\f07b";}
+.vix-icon-mkfile:before {content: "\f016";}
