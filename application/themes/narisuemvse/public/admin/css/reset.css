@@ -247,7 +247,7 @@ code {
 
 .left {float: left;}
 .right {float: right;}
-.none {display: none;}
+.none {display: none !important;}
 .tr {
 	transition: all 0.3s ease 0s;
 	cursor: pointer;
@@ -1198,7 +1198,7 @@ a.cke_button:hover,
 
 .tabs-list {
 	display: table;
-	width: 100%;
+	width: 40%;
 	border-bottom: 2px solid #e5e5e5;
 }
 
@@ -1235,4 +1235,8 @@ a.cke_button:hover,
 
 .tab-content-in.active {
 	display: block;
+}
+
+.tabs-list > ul > li.inactive {
+	opacity: .5;
 }

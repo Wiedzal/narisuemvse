@@ -15,11 +15,11 @@ class ImageBehavior extends CActiveRecordBehavior
      */
     public $thumbnailPathAlias = 'webroot.upload.thumbs';
     /**
-     * @var int ширина создаваемого эскиза 
+     * @var int ширина создаваемого превью 
      */
     public $thumbnailWidth = 400;
     /**
-     * @var int высота создаваемого эскиза 
+     * @var int высота создаваемого превью 
      */
     public $thumbnailHeight = 300;
     /**
@@ -30,7 +30,7 @@ class ImageBehavior extends CActiveRecordBehavior
     /**
      * @var string типы файлов, которые можно загружать (нужно для валидации)
      */
-    public $fileTypes = 'jpg,png,gif,bmp';
+    public $fileTypes = 'jpg,jpeg,png,gif,bmp';
     /**
      * @var int максимальный размер файла (нужно для валидации)
      */
@@ -61,7 +61,7 @@ class ImageBehavior extends CActiveRecordBehavior
     }
 
     /**
-     * Сохранение изображения на сервере с созданием эскиза
+     * Сохранение изображения на сервере с созданием превью
      */
     public function beforeSave($event)
     {
@@ -101,7 +101,7 @@ class ImageBehavior extends CActiveRecordBehavior
     }
 
     /**
-     * Удаление файла изображения и его эскиза
+     * Удаление файла изображения и его превью
      */
     public function deleteFile()
     {
@@ -128,7 +128,7 @@ class ImageBehavior extends CActiveRecordBehavior
     }
     
     /**
-     * Получение источника (src для <img>) эскиза изображения
+     * Получение источника (src для <img>) превью изображения
      */
     public function getImageThumbUrl()
     {
@@ -147,7 +147,7 @@ class ImageBehavior extends CActiveRecordBehavior
     } 
     
     /**
-     * Получение пути к директории с эскизом изображения
+     * Получение пути к директории с превью изображения
      */
     private function getBaseThumbnailPath()
     {

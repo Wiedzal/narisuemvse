@@ -346,7 +346,7 @@ class CWebApplication extends CApplication
 			$classFile=$basePath.DIRECTORY_SEPARATOR.$className.'.php';
 
 			if($owner->controllerNamespace!==null)
-				$className=$owner->controllerNamespace.'\\'.str_replace('/','\\',$controllerID).$className;
+				$className=$owner->controllerNamespace.'\\'.$className;
 
 			if(is_file($classFile))
 			{

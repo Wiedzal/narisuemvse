@@ -72,9 +72,8 @@ abstract class CAction extends CComponent implements IAction
 		$method=new ReflectionMethod($this, 'run');
 		if($method->getNumberOfParameters()>0)
 			return $this->runWithParamsInternal($this, $method, $params);
-
-		$this->run();
-		return true;
+		else
+			return $this->run();
 	}
 
 	/**

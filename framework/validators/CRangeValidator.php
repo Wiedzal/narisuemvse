@@ -59,7 +59,7 @@ class CRangeValidator extends CValidator
 		{
 			foreach($this->range as $r)
 			{
-				$result = $r === '' || $value === '' ? $r === $value : $r == $value;
+				$result=(strcmp($r,$value)===0);
 				if($result)
 					break;
 			}

@@ -152,7 +152,7 @@ class CButtonColumn extends CGridColumn
 	 * <pre>
 	 *  array(
 	 *     class'=>'CButtonColumn',
-	 *     'afterDelete'=>'function(link,success,data){ if(success) alert("Delete completed successfully"); }',
+	 *     'afterDelete'=>'function(link,success,data){ if(success) alert("Delete completed successfuly"); }',
 	 *  ),
 	 * </pre>
 	 */
@@ -305,15 +305,13 @@ EOD;
 	}
 
 	/**
-	 * Returns the data cell content.
+	 * Renders the data cell content.
 	 * This method renders the view, update and delete buttons in the data cell.
 	 * @param integer $row the row number (zero-based)
-	 * @return string the data cell content.
-	 * @since 1.1.16
+	 * @param mixed $data the data associated with the row
 	 */
-	public function getDataCellContent($row)
+	protected function renderDataCellContent($row,$data)
 	{
-		$data=$this->grid->dataProvider->data[$row];
 		$tr=array();
 		ob_start();
 		foreach($this->buttons as $id=>$button)
@@ -323,7 +321,7 @@ EOD;
 			ob_clean();
 		}
 		ob_end_clean();
-		return strtr($this->template,$tr);
+		echo strtr($this->template,$tr);
 	}
 
 	/**

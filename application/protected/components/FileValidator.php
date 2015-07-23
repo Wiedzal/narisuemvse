@@ -60,7 +60,7 @@ class FileValidator extends CFileValidator {
             $message = $this->tooLarge !== null ? $this->tooLarge : Yii::t('yii','The file "{file}" is too large. Its size cannot exceed {limit} bytes.');
             $message = strtr($message, array(
                 '{file}' => ':file',
-                '{limit}' => $this->bytesToSize($this->getSizeLimit()),
+                '{limit}' => $this->getReadableFileSize($this->getSizeLimit()),
                 ));
             
             $inputId = get_class($object)."_".$attribute;
@@ -80,7 +80,7 @@ class FileValidator extends CFileValidator {
     /**
      * Конвертерр байтового размера файла
      */
-    private function bytesToSize($bytes) 
+    private function getReadableFileSize($bytes) 
     {
         $sizes = array('байт', 'KB', 'MB', 'GB', 'TB');
         

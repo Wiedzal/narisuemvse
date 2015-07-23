@@ -163,16 +163,8 @@ abstract class CBaseController extends CComponent
 		{
 			ob_start();
 			ob_implicit_flush(false);
-			try
-			{
-				$widget=$this->createWidget($className,$properties);
-				$widget->run();
-			}
-			catch(Exception $e)
-			{
-				ob_end_clean();
-				throw $e;
-			}
+			$widget=$this->createWidget($className,$properties);
+			$widget->run();
 			return ob_get_clean();
 		}
 		else

@@ -251,15 +251,7 @@ class CJSON
 				return '[' . join(',', array_map(array('CJSON', 'encode'), $var)) . ']';
 
 			case 'object':
-				// Check for the JsonSerializable interface available in PHP5.4
-				// Note that instanceof returns false in case it doesnt know the interface.
-				if (interface_exists('JsonSerializable', false) && $var instanceof JsonSerializable)
-				{
-					// We use the function defined in the interface instead of json_encode.
-					// This way even for PHP < 5.4 one could define the interface and use it.
-					return self::encode($var->jsonSerialize());
-				}
-				elseif ($var instanceof Traversable)
+				if ($var instanceof Traversable)
 				{
 					$vars = array();
 					foreach ($var as $k=>$v)

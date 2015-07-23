@@ -6,26 +6,22 @@
     <title><?=CHtml::encode($this->pageTitle);?></title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
+    <meta name="keywords" content="<?=CHtml::encode($this->pageKeywords);?>" />
+    <meta name="description" content="<?=CHtml::encode($this->pageDescription);?>" />
     <meta name="viewport" content="width=1000" />
         
-    <link href="<?= Yii::app()->theme->baseUrl ?>/public/site/plugins/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
     <link href="<?= Yii::app()->theme->baseUrl ?>/public/admin/css/reset.css" type="text/css" rel="stylesheet" />
     <link href="<?= Yii::app()->theme->baseUrl ?>/public/admin/css/style.css" type="text/css" rel="stylesheet" />
 
     <link rel="shortcut icon" href="<?= Yii::app()->theme->baseUrl ?>/public/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="<?= Yii::app()->theme->baseUrl ?>/public/favicon.ico" type="image/x-icon" />
 
-    <? Yii::app()->clientScript->registerCoreScript('jquery'); ?>
-
-    <script type="text/javascript" src="<?= Yii::app()->theme->baseUrl ?>/public/site/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="<?= Yii::app()->theme->baseUrl ?>/public/site/plugins/jquery.formstyler/jquery.formstyler.js"></script>
     <script type="text/javascript" src="<?= Yii::app()->theme->baseUrl ?>/public/admin/js/content.js"></script>
     <script type="text/javascript" src="<?= Yii::app()->theme->baseUrl ?>/public/admin/js/js.js"></script>
     
+    <? include 'control_head.php' ?>
+
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
-    
 </head>
 <body>
 <div class="super-wrapper">
@@ -68,6 +64,20 @@
                     <ul class="submenu">
                         <li>
                             <a href="<?=Yii::app()->createUrl('/admin/news')?>"><i class="fa fa-fw fa-newspaper-o"></i>Новости</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><i class="fa fa-fw fa-shopping-cart"></i>Магазин</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="<?=Yii::app()->createUrl('/admin/shop/categories')?>"><i class="fa fa-fw fa-newspaper-o"></i>Категории</a>
+                        </li>
+                        <li>
+                            <a href="<?=Yii::app()->createUrl('/admin/shop/products')?>"><i class="fa fa-fw fa-newspaper-o"></i>Товары</a>
+                        </li>
+                        <li>
+                            <a href="<?=Yii::app()->createUrl('/admin/shop/orders')?>"><i class="fa fa-fw fa-newspaper-o"></i>Заказы</a>
                         </li>
                     </ul>
                 </li>

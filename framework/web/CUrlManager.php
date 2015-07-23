@@ -658,7 +658,6 @@ class CUrlRule extends CBaseUrlRule
 		$this->route=trim($route,'/');
 
 		$tr2['/']=$tr['/']='\\/';
-		$tr['.']='\\.';
 
 		if(strpos($route,'<')!==false && preg_match_all('/<(\w+)>/',$route,$matches2))
 		{

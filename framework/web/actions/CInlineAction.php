@@ -45,8 +45,8 @@ class CInlineAction extends CAction
 		$method=new ReflectionMethod($controller, $methodName);
 		if($method->getNumberOfParameters()>0)
 			return $this->runWithParamsInternal($controller, $method, $params);
-
-		$controller->$methodName();
-		return true;
+		else
+			return $controller->$methodName();
 	}
+
 }

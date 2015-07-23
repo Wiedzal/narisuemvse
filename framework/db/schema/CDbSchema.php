@@ -316,11 +316,10 @@ abstract class CDbSchema extends CComponent
 	 * These abstract column types are supported (using MySQL as example to explain the corresponding
 	 * physical types):
 	 * <ul>
-	 * <li>pk and bigpk: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY" or "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"</li>
+	 * <li>pk: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"</li>
 	 * <li>string: string type, will be converted into "varchar(255)"</li>
 	 * <li>text: a long string type, will be converted into "text"</li>
 	 * <li>integer: integer type, will be converted into "int(11)"</li>
-	 * <li>bigint: integer type, will be converted into "bigint(20)"</li>
 	 * <li>boolean: boolean type, will be converted into "tinyint(1)"</li>
 	 * <li>float: float number type, will be converted into "float"</li>
 	 * <li>decimal: decimal number type, will be converted into "decimal"</li>
@@ -368,7 +367,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for creating a new DB table.
 	 * @since 1.1.6
 	 */
-	public function createTable($table,$columns,$options=null)
+	public function createTable($table, $columns, $options=null)
 	{
 		$cols=array();
 		foreach($columns as $name=>$type)
@@ -389,7 +388,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for renaming a DB table.
 	 * @since 1.1.6
 	 */
-	public function renameTable($table,$newName)
+	public function renameTable($table, $newName)
 	{
 		return 'RENAME TABLE ' . $this->quoteTableName($table) . ' TO ' . $this->quoteTableName($newName);
 	}
@@ -426,7 +425,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for adding a new column.
 	 * @since 1.1.6
 	 */
-	public function addColumn($table,$column,$type)
+	public function addColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->quoteTableName($table)
 			. ' ADD ' . $this->quoteColumnName($column) . ' '
@@ -440,7 +439,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for dropping a DB column.
 	 * @since 1.1.6
 	 */
-	public function dropColumn($table,$column)
+	public function dropColumn($table, $column)
 	{
 		return "ALTER TABLE ".$this->quoteTableName($table)
 			." DROP COLUMN ".$this->quoteColumnName($column);
@@ -454,7 +453,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for renaming a DB column.
 	 * @since 1.1.6
 	 */
-	public function renameColumn($table,$name,$newName)
+	public function renameColumn($table, $name, $newName)
 	{
 		return "ALTER TABLE ".$this->quoteTableName($table)
 			. " RENAME COLUMN ".$this->quoteColumnName($name)
@@ -471,7 +470,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for changing the definition of a column.
 	 * @since 1.1.6
 	 */
-	public function alterColumn($table,$column,$type)
+	public function alterColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
 			. $this->quoteColumnName($column) . ' '
@@ -484,29 +483,27 @@ abstract class CDbSchema extends CComponent
 	 * The method will properly quote the table and column names.
 	 * @param string $name the name of the foreign key constraint.
 	 * @param string $table the table that the foreign key constraint will be added to.
-	 * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas or pass as an array of column names.
+	 * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
 	 * @param string $refTable the table that the foreign key references to.
-	 * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas or pass as an array of column names.
+	 * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
 	 * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
 	 * @return string the SQL statement for adding a foreign key constraint to an existing table.
 	 * @since 1.1.6
 	 */
-	public function addForeignKey($name,$table,$columns,$refTable,$refColumns,$delete=null,$update=null)
+	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete=null, $update=null)
 	{
-		if(is_string($columns))
-			$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
+		$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
 		foreach($columns as $i=>$col)
 			$columns[$i]=$this->quoteColumnName($col);
-		if(is_string($refColumns))
-			$refColumns=preg_split('/\s*,\s*/',$refColumns,-1,PREG_SPLIT_NO_EMPTY);
+		$refColumns=preg_split('/\s*,\s*/',$refColumns,-1,PREG_SPLIT_NO_EMPTY);
 		foreach($refColumns as $i=>$col)
 			$refColumns[$i]=$this->quoteColumnName($col);
 		$sql='ALTER TABLE '.$this->quoteTableName($table)
 			.' ADD CONSTRAINT '.$this->quoteColumnName($name)
-			.' FOREIGN KEY ('.implode(', ',$columns).')'
+			.' FOREIGN KEY ('.implode(', ', $columns).')'
 			.' REFERENCES '.$this->quoteTableName($refTable)
-			.' ('.implode(', ',$refColumns).')';
+			.' ('.implode(', ', $refColumns).')';
 		if($delete!==null)
 			$sql.=' ON DELETE '.$delete;
 		if($update!==null)
@@ -521,7 +518,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for dropping a foreign key constraint.
 	 * @since 1.1.6
 	 */
-	public function dropForeignKey($name,$table)
+	public function dropForeignKey($name, $table)
 	{
 		return 'ALTER TABLE '.$this->quoteTableName($table)
 			.' DROP CONSTRAINT '.$this->quoteColumnName($name);
@@ -531,17 +528,16 @@ abstract class CDbSchema extends CComponent
 	 * Builds a SQL statement for creating a new index.
 	 * @param string $name the name of the index. The name will be properly quoted by the method.
 	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-	 * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
-	 * by commas or pass as an array of column names. Each column name will be properly quoted by the method, unless a parenthesis is found in the name.
+	 * @param string $column the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * by commas. Each column name will be properly quoted by the method, unless a parenthesis is found in the name.
 	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
 	 * @return string the SQL statement for creating a new index.
 	 * @since 1.1.6
 	 */
-	public function createIndex($name,$table,$columns,$unique=false)
+	public function createIndex($name, $table, $column, $unique=false)
 	{
 		$cols=array();
-		if(is_string($columns))
-			$columns=preg_split('/\s*,\s*/',$columns,-1,PREG_SPLIT_NO_EMPTY);
+		$columns=preg_split('/\s*,\s*/',$column,-1,PREG_SPLIT_NO_EMPTY);
 		foreach($columns as $col)
 		{
 			if(strpos($col,'(')!==false)
@@ -561,7 +557,7 @@ abstract class CDbSchema extends CComponent
 	 * @return string the SQL statement for dropping an index.
 	 * @since 1.1.6
 	 */
-	public function dropIndex($name,$table)
+	public function dropIndex($name, $table)
 	{
 		return 'DROP INDEX '.$this->quoteTableName($name).' ON '.$this->quoteTableName($table);
 	}
@@ -583,7 +579,7 @@ abstract class CDbSchema extends CComponent
 			$columns[$i]=$this->quoteColumnName($col);
 		return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ADD CONSTRAINT '
 			. $this->quoteColumnName($name) . '  PRIMARY KEY ('
-			. implode(', ',$columns). ' )';
+			. implode(', ', $columns). ' )';
 	}
 
 	/**

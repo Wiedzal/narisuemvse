@@ -15,9 +15,10 @@ class DefaultController extends AdminModuleController
         $this->pageTitle = Yii::t('app', 'Новости');
 
         $criteria = new CDbCriteria();
+        $criteria->order = 'created_at DESC';
         $count = News::model()->count($criteria);
         $pages = new CPagination($count);
-        $pages->PageSize = 5;
+        $pages->PageSize = 10;
         $pages->applyLimit($criteria);
 
         $models = News::model()->findAll($criteria);
@@ -69,8 +70,9 @@ class DefaultController extends AdminModuleController
         
         if (!empty($_POST) && array_key_exists('News', $_POST))
         {
+            //var_dump($_POST);die;
             $model->attributes = $_POST['News'];
-
+            //var_dump($model->attributes);die;
             if ($model->validate())
             {
                 if($model->save())

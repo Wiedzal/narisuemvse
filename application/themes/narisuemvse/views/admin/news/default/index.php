@@ -7,9 +7,9 @@
 
 <? if(empty($models)) : ?>
 
-<div class="note note-info">
-    <?=Yii::t('app', 'У вас ещё не создано ни одной новости. Вы можете')?> <a href="<?=$this->createUrl('default/create')?>" class="medium"><?=Yii::t('app', 'создать новость')?></a>
-</div>
+    <div class="note note-info">
+        <?=Yii::t('app', 'У вас ещё не создано ни одной новости. Вы можете')?> <a href="<?=$this->createUrl('default/create')?>" class="medium"><?=Yii::t('app', 'создать новость')?></a>
+    </div>
 
 <? else : ?>
 

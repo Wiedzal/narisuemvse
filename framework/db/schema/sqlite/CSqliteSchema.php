@@ -23,11 +23,9 @@ class CSqliteSchema extends CDbSchema
 	 */
     public $columnTypes=array(
         'pk' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
-        'bigpk' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         'string' => 'varchar(255)',
         'text' => 'text',
         'integer' => 'integer',
-        'bigint' => 'integer',
         'float' => 'float',
         'decimal' => 'decimal',
         'datetime' => 'datetime',

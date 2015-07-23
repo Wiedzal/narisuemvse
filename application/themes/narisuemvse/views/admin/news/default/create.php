@@ -1,10 +1,16 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'create-news-form',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-        //'validateOnChange'=>true,
-	),
+    'id'=>'create-news-form',
+    //'enableAjaxValidation' => true,
+    'enableClientValidation'=>true,
+    'clientOptions'=>array(
+        'validateOnSubmit'=>true,
+        'beforeValidate' => new CJavaScriptExpression('function(form) {
+            for(var instanceName in CKEDITOR.instances) { 
+                CKEDITOR.instances[instanceName].updateElement();
+            }
+            return true;
+        }'),
+    ),
     'stateful' => true,
     'htmlOptions' => array('enctype' => 'multipart/form-data'),
 )); ?>
@@ -35,7 +41,7 @@
     <div class="col-3 form-collabel">
         <?=Yii::t('app', 'Полный текст')?>
     </div>
-    <div class="col-9">
+    <div class="col-9 form-collabel">
         <?php $this->widget('application.extensions.ckeditor.ECKEditor', array(
             'model'=>$model,
             'attribute' => 'text',
@@ -92,6 +98,25 @@
 <div class="row form-group">
     <div class="col-3 form-collabel">
         <?=Yii::t('app', 'Ссылка на источник')?>
+    </div>
+    <div class="col-9">
+    
+    </div>
+</div>
+
+<hr class="mt30 mb30" />
+
+<div class="row form-group">
+    <div class="col-3 form-collabel">
+        <?=Yii::t('app', 'Описание (для поисковых систем)')?>
+    </div>
+    <div class="col-9">
+    
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-3 form-collabel">
+        <?=Yii::t('app', 'Ключевые слова (для поисковых систем)')?>
     </div>
     <div class="col-9">
     

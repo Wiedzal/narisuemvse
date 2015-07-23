@@ -88,7 +88,7 @@ class CHtmlPurifier extends COutputProcessor
 	/**
 	 * Set the options for HTML Purifier and create a new HTML Purifier instance based on these options.
 	 * @param mixed $options the options for HTML Purifier
-	 * @return static the object instance itself
+	 * @return CHtmlPurifier
 	 */
 	public function setOptions($options)
 	{
