@@ -382,7 +382,7 @@ body {
 div.loading {
     background-color: #eee;
     background-image: url('../img/ajax-loader.gif');
-    background-position: center center;
+    background-position: center 20%;
     background-repeat: no-repeat;
     opacity: 1;
 }
@@ -399,6 +399,17 @@ div.loading * {
     background: #000 none repeat scroll 0 0;
     position: relative;
 }
+.photo-img-in .photo-error {
+    display: block;
+    height: 200px;
+}
+
+.photo-img-in .photo-error-message {
+    color: white;
+    display: block;
+    padding: 10px 0 0 10px;
+}
+
 .photo-img .delete-photo {
     opacity: 0;
     position: absolute;
@@ -422,15 +433,5 @@ div.loading * {
 }
 .photo-img-link:hover img {
     opacity: 0.8;
-}
-
-/* uploadify */
-.upload-btn-wrap {
-    position: relative;
-}
-
-.uploadify object {
-    cursor: pointer;
-    width: 100% !important;
 }
 

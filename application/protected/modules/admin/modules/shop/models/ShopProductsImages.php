@@ -53,6 +53,7 @@ class ShopProductsImages extends ActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'owner' => array(self::HAS_ONE, 'ShopProducts', array('id'=>'product_id')),
         );
     }
 
@@ -132,5 +133,15 @@ class ShopProductsImages extends ActiveRecord
                 'thumbnailPathAlias' => 'upload/products_picture/thumbs',
             ),
         );
+    }
+    
+    public function updateOwnerMainImage()
+    {
+        $this->owner->main_image_id = $this->id;
+        if(!$this->owner->save())
+        {
+            return false;
+        }
+        return true;
     }
 }

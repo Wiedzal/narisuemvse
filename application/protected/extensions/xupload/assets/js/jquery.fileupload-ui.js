@@ -151,7 +151,7 @@
                             function () {
                                 var node = $(this);
                                 template = that._renderDownload([file])
-                                    .css('height', node.height())
+                                    //.css('height', node.height())
                                     .replaceAll(node);
                                 that._forceReflow(template);
                                 that._transition(template).done(
@@ -658,7 +658,7 @@
         _initFilesContainer: function () {
             var options = this.options;
             if (options.filesContainer === undefined) {
-                options.filesContainer = this.element.find('.files');
+                options.filesContainer = $('.files');
             } else if (!(options.filesContainer instanceof $)) {
                 options.filesContainer = $(options.filesContainer);
             }

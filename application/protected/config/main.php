@@ -76,21 +76,13 @@ return array(
                     'baseUrl' => 'js/jquery.formstyler',
                     'js' => array('jquery.formstyler.js'),
                 ),
-                /*'uploadify' => array(
-                    'baseUrl' => 'js/uploadify_31',
-                    'js' => array(
-                        //'jquery.uploadify-3.1.js', 
-                        'jquery.uploadify-3.1.min.js'
-                    ),
-                    'css' => array('uploadify.css'),
+                
+                'vix-gallery' => array(
+                    'baseUrl' => 'js/vix-gallery',
+                    'js' => array('js/jquery.vix-gallery.js'),
+                    'css' => array('css/gallery.css'),
+                    'depends' => array('jquery'),
                 ),
-                'uploadify_new' => array(
-                    'baseUrl' => 'js/uploadify_new',
-                    'js' => array( 
-                        'jquery.uploadify.v2.1.4.min.js'
-                    ),
-                    'css' => array('uploadify.css'),
-                ),*/
             )
         ),
 

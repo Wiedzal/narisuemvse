@@ -136,11 +136,7 @@ class XUpload extends CJuiInputWidget {
         else
         {
             $this -> renderFile($this->formView, compact('htmlOptions'));
-            
         }
-        
-        
-
     }
 
     /**

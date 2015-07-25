@@ -38,7 +38,7 @@ class AdminModuleController extends Controller
         Yii::app()->clientScript->registerPackage('bootstrap');
         Yii::app()->clientScript->registerPackage('font-awesome');
         Yii::app()->clientScript->registerPackage('jquery.formstyler');
-        
+
         return true;
     }
 }

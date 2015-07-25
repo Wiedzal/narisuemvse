@@ -41,6 +41,7 @@ class Controller extends CController
     {
         parent::beforeRender($view);
         $this->includeScriptFile();
+        
         return true;
     }
     
