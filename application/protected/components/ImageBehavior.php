@@ -34,7 +34,7 @@ class ImageBehavior extends CActiveRecordBehavior
     /**
      * @var int максимальный размер файла (нужно для валидации)
      */
-    public $maxSize = 2097152;//2097152
+    public $maxSize =  5242880;//2097152
     
     
     /**

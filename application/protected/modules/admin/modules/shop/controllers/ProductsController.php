@@ -30,6 +30,7 @@ class ProductsController extends AdminModuleController
         if (isset($_GET['ShopProducts'])) {
             $model->attributes = $_GET['ShopProducts'];
         }
+
         $this->render('index', array(
             'model' => $model,
         ));
@@ -48,9 +49,8 @@ class ProductsController extends AdminModuleController
             if($params['id'])
                 $model = ShopProducts::model()->findByPk($params['id']);
                 
-            if(isset($_POST['ajax']) && $_POST['ajax']==='create-product-form')
+            if(isset($_POST['ajax']) && $_POST['ajax']==='product-form')
             {
-                //var_dump(Yii::app()->request->getPost('ShopProducts'));die;
                 echo CActiveForm::validate($model);
                 Yii::app()->end();
             }
@@ -59,7 +59,6 @@ class ProductsController extends AdminModuleController
                 $model->attributes = Yii::app()->request->getPost('ShopProducts');
                 $model->save();
                 echo CJSON::encode(array(
-                    'content' => $this->renderPartial('_form_edit', array('model'=>$model),true),
                     'id' => $model->id
                 ));
                 Yii::app()->end();
@@ -86,7 +85,7 @@ class ProductsController extends AdminModuleController
 
         if (Yii::app()->request->getPost('ShopProducts'))
         {
-            if(isset($_POST['ajax']) && $_POST['ajax']==='edit-product-form')
+            if(isset($_POST['ajax']) && $_POST['ajax']==='product-form')
             {
                 echo CActiveForm::validate($model);
                 Yii::app()->end();
@@ -226,10 +225,10 @@ class ProductsController extends AdminModuleController
         
         $fileValidator = CValidator::createValidator('FileValidator', $model, 'file', 
             array(
-                'maxSize'=>2097152,
+                'maxSize'=>5242880,
                 'types'=>'jpg,jpeg,png,gif,bmp',
                 'mimeTypes'=>'image/jpeg,image/png,image/gif,image/bmp',
-                'tooLarge'=>Yii::t('yii','Размер файла "{file}" слишком велик, он не должен превышать 2MB.'),
+                'tooLarge'=>Yii::t('yii','Размер файла "{file}" слишком велик, он не должен превышать 5MB.'),
             ));
         $model->validatorList->add($fileValidator);
         
@@ -253,7 +252,7 @@ class ProductsController extends AdminModuleController
                 //using something like PHPThumb
                 Yii::app()->simpleImage
                     ->load($path.$filename)
-                    ->thumbnail(200,200)->save($publicPath.$filename);
+                    ->thumbnail(300,200)->save($publicPath.$filename);
 
                 $shopProductsImages = new ShopProductsImages();
                 $shopProductsImages->product_id = $_GET["id"];
