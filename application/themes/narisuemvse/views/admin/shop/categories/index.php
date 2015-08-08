@@ -47,7 +47,7 @@
                 </td>
                 <td class="item-title"><?=$model->title;?></td>
                 <td>
-                    <a href="<?=Yii::app()->createAbsoluteUrl($model->path)?>" class="medium"><?=$model->path?></a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl($model->url)?>" class="medium"><?=$model->url?></a>
                 </td>
                 <td class="w175">
                     <a href="<?=$this->createUrl('categories/view/id/'.$model->id)?>" class="btn btn-info btn-icon"><i class="fa fa-eye"></i></a>

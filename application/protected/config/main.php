@@ -17,9 +17,11 @@ return array(
     'import' => array(
         'application.models.*',
         'application.components.*',
+        'application.widgets.*',
     ),
     'aliases' => array(
         'xupload' => 'ext.xupload',
+        'simpleimage' => 'ext.simpleimage'
     ),
     'modules'=>array(
         // uncomment the following to enable the Gii tool
@@ -41,6 +43,9 @@ return array(
         ),
         'shop' => array(
             'class' => 'application.modules.shop.ShopModule'
+        ),
+        'importcsv'=>array(
+            'path'=>'upload/importCsv/'
         ),
     ),
 
@@ -87,7 +92,7 @@ return array(
         ),
 
         'simpleImage'=>array(
-            'class' => 'application.extensions.SimpleImage',
+            'class' => 'application.extensions.simpleimage.SimpleImage',
         ),
         
         'user' => array(
@@ -116,6 +121,14 @@ return array(
                 
                 
             ),
+        ),
+        
+        'widgetFactory'=>array(
+            'widgets'=>array(
+                'CListView' => array(
+                   'template' =>  "{summary}\n{items}\n{pager}",
+                )
+            )
         ),
         
         // database settings are configured in database.php

@@ -18,37 +18,19 @@ class DefaultController extends Controller
  
     public function actionCategory($category)
     {
-        //die('actionCategory');
-        // Ищем категорию по переданному пути
+        //Ищем категорию по переданному пути
         $category = ShopCategories::model()->findByPath($category);
         if (!$category)
             throw new CHttpException(404, Yii::t('app', 'Категория не найдена'));
- 
-        //var_dump($category);
-        //var_dump($category->url);
-        //die('categ');
- 
-        $criteria = new CDbCriteria();
-        //var_dump($category->id);
-        //var_dump($category->getChildsArray());
-        //var_dump(array_merge(array($category->id), $category->getChildsArray()));
-        //die;
-        /*$criteria->addInCondition('t.category_id', array_merge(array($category->id), $category->getChildsArray()));
- 
-        $dataProvider = new CActiveDataProvider(ShopProduct::model()->cache(3600), array(
-            'criteria'=>$criteria,
-            'pagination'=> array(
-                'pageSize'=>self::PRODUCTS_PER_PAGE,
-                'pageVar'=>'page',
-            )
-        ));*/
- 
+
         $this->breadcrumbs = array_merge($this->breadcrumbs, $category->breadcrumbs);
         $this->pageTitle = $category->title;
         $this->pageDescription = $category->meta_description;
-        $this->pageKeywords = $category->meta_keywords;
+        $this->pageKeywords = $category->meta_keywords;   
+            
+        $criteria = new CDbCriteria();
+        
         $this->render('category', array(
-            //'dataProvider'=>$dataProvider,
             'category'=>$category,
         ));
     }

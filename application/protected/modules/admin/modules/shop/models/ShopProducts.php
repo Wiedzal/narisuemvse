@@ -32,10 +32,11 @@ class ShopProducts extends ActiveRecord
     public $_price_min;
     public $_price_max;
     
+    public $_remoteFile;
     /**
      * Атрибут, в котором хранится имя файла главного изображения
      */
-    public $_main_mage_file_name;
+    public $_mainImageFileName;
     /**
      * @return string the associated database table name
      */
@@ -61,10 +62,11 @@ class ShopProducts extends ActiveRecord
             array('article, alias, title, meta_keywords', 'length', 'max'=>255),
             array('price', 'length', 'max'=>20),
             array('meta_description', 'length', 'max'=>1000),
-            array('description, created_at, modified_at', 'safe'),
+            array('_remoteFile', 'length', 'max'=>255, 'on'=>'import'),
+            array('_remoteFile', 'url', 'on'=>'import'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, article, alias, title, category_id, description, price, is_available, main_image_id, is_show, meta_keywords, meta_description, created_at, created_by, modified_at, modified_by, _price_min, _price_max', 'safe', 'on'=>'search'),
+            array('id, article, alias, title, category_id, description, price, is_available, main_image_id, is_show, meta_keywords, meta_description, created_at, created_by, modified_at, modified_by, _price_min, _price_max', 'safe', 'on'=>'search,import'),
         );
     }
 
@@ -95,8 +97,8 @@ class ShopProducts extends ActiveRecord
             'category_id' => 'Категория',
             'description' => 'Описание товара',
             'price' => 'Цена',
-            'is_available' => 'Доступность/есть ли на складе)',
-            'main_image_id' => 'Идентификатор главного изображения из таблицы shop_products_images ',
+            'is_available' => 'Доступность/есть ли на складе',
+            'main_image_id' => 'Основное изображение',
             'is_show' => 'Отображение',
             'meta_keywords' => 'Ключевые слова (для поисковых систем)',
             'meta_description' => 'Описание (для поисковых систем)',
@@ -105,7 +107,8 @@ class ShopProducts extends ActiveRecord
             'modified_at' => 'Modified At',
             'modified_by' => 'Modified By',
             
-            '_main_mage_file_name' => 'Основное изображение',
+            '_mainImageFileName' => 'Имя файла основного изображения',
+            '_remoteFile' => 'Ссылка на основное изображение',
         );
     }
 
@@ -127,7 +130,7 @@ class ShopProducts extends ActiveRecord
 
         $criteria=new CDbCriteria;
 
-        if((isset($this->_price_min) && trim($this->_price_min) != "") && (isset($this->_price_max) && trim($this->_price_max) != ""))
+        /*if((isset($this->_price_min) && trim($this->_price_min) != "") && (isset($this->_price_max) && trim($this->_price_max) != ""))
         {
             $criteria->addBetweenCondition('t.price', $this->_price_min, $this->_price_max);
         }
@@ -141,7 +144,7 @@ class ShopProducts extends ActiveRecord
         {
             $criteria->addCondition('t.price <= :price_max', 'AND');
             $criteria->params += array(':price_max'=>$this->_price_max);
-        }
+        }*/
 
         $criteria->compare('id',$this->id);
         $criteria->compare('article',$this->article,true);
@@ -149,11 +152,7 @@ class ShopProducts extends ActiveRecord
         $criteria->compare('title',$this->title,true);
         $criteria->compare('category_id',$this->category_id);
         $criteria->compare('description',$this->description,true);
-        
-        //$criteria->compare('price',$this->price,true);
-        $criteria->compare('_price_min', $this->price,true);
-        $criteria->compare('_price_max', $this->price,true);
-        
+        $criteria->compare('price',$this->price);
         $criteria->compare('is_available',$this->is_available);
         $criteria->compare('main_image_id',$this->main_image_id);
         $criteria->compare('is_show',$this->is_show);
@@ -164,14 +163,16 @@ class ShopProducts extends ActiveRecord
         $criteria->compare('modified_at',$this->modified_at,true);
         $criteria->compare('modified_by',$this->modified_by);
 
-        $criteria->order = 'id DESC';
-        var_dump($criteria);//die;
-        return new CActiveDataProvider($this, array(
+        //$criteria->order = 'id DESC';
+
+        $CActiveDataProvider = new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
+            'sort'=>array('attributes'=>array('id','article','title','price')),
             'pagination'=>array(
                 'pageSize'=> 2,
             ),
         ));
+        return $CActiveDataProvider;
     }
 
     /**
@@ -188,7 +189,22 @@ class ShopProducts extends ActiveRecord
     public function afterFind()
     {
         parent::afterFind();
-        $this->_main_mage_file_name = $this->main_image ? $this->main_image->file_name : null;
+        $this->_mainImageFileName = $this->main_image ? $this->main_image->file_name : null;
+    }
+
+    /*public function beforeSave()
+    {
+        parent::beforeSave();
+        return true;
+    }*/
+    
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        foreach($this->images as $image)
+        {
+            $image->delete();
+        }
     }
     
     public function behaviors()
@@ -196,7 +212,7 @@ class ShopProducts extends ActiveRecord
         return array(
             'imageBehavior' => array(
                 'class' => 'ImageBehavior',
-                'attributeName' => '_main_mage_file_name',
+                'attributeName' => '_mainImageFileName',
                 'savePathAlias' => 'upload/products_picture',
                 'thumbnailPathAlias' => 'upload/products_picture/thumbs',
             ),
@@ -206,14 +222,33 @@ class ShopProducts extends ActiveRecord
     public static function gridIsShowItem($value)
     {
         $items = self::gridIsShowItems();
-
         return (array_key_exists($value, $items)) ? $items[$value] : 'н/д';
     }
+    
     public static function gridIsShowItems()
     {
         return array(
             self::IS_SHOW_ACTIVE => Yii::t('app', 'Да'),
             self::IS_SHOW_INACTIVE => Yii::t('app', 'Нет'),
         );
+    }
+    
+    /**
+     * Возвращает массив доступных для импорта полей товара в виде column => label
+     */
+    public static function getAvailableColumns()
+    {
+        $tech_columns = array(
+            'id'=>'id',
+            'category_id'=>'category_id',
+            'main_image_id'=>'main_image_id',
+            'created_at'=>'created_at',
+            'created_by'=>'created_by',
+            'modified_at'=>'modified_at',
+            'modified_by'=>'modified_by',
+            '_mainImageFileName'=>'_mainImageFileName',
+        );
+        $columns = array_diff_key(self::model()->attributeLabels(), $tech_columns);
+        return $columns;
     }
 }

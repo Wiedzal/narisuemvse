@@ -8,6 +8,37 @@ $(function()
     $('#clear-main-image').click(function(event) {
         clearMainImage(event.target.getAttribute('data-product-id'));
     });
+    
+    $('#remotefile-form btn').click(function(event) {
+        event.preventDefault();
+        var url = $('#remotefile-form ').val();
+        $.ajax({
+            type : "POST",
+            url : '/admin/shop/products/uploadFromUrl',
+            data : {
+                YII_CSRF_TOKEN : globalCsrfToken,
+                url : url,
+            },
+            cashe : false,
+            error : function () {
+                alert('Ошибка запроса. Обновите страницу и попробуйте ещё раз.');
+            },
+            dataType : 'json',
+            success : function(data) {
+                console.log('1');
+                /*if(data.status == false) {
+                    alert(data.message);
+                } 
+                else if(data.status == true) {
+                    $(target).closest('.photo-img').remove();
+                    if(data.is_main == true) {
+                        $('#main-image').attr('src', '/themes/narisuemvse/public/admin/img/no-photo/500x500.png');
+                        $('#clear-main-image').hide();
+                    }
+                }*/
+            },
+        });
+    });
 
     $('#images-block').click(function(event) {
         var target = event.target;

@@ -23,13 +23,13 @@
                     },
                     success: function(data) {
                         setTimeout( function() {
-                            var action = $(form).data("action");
+                            var action = $("#product-form").data("action");
                             if(action == "create")
                             {
                                 $("#ShopProducts_id").val(data.id);
-                                $("#create-product-form").data("product-id", data.id).attr("product-id", data.id);
+                                $("#product-form").data("product-id", data.id).attr("product-id", data.id);
                                 $("#clear-main-image").data("product-id", data.id).attr("data-product-id", data.id);
-                                $(form).data("action", "edit").attr("action", "edit");
+                                $("#product-form").data("action", "edit").attr("action", "edit");
                                 $("#XUploadForm-form").attr("action", "/admin/shop/products/upload/id/"+data.id);
                                 $(".active").removeClass("active");
                                 $(".inactive").addClass("active");
@@ -44,7 +44,8 @@
                 });
                 return false;
             }
-        }'),
+        }'
+    ),
     'stateful' => true,
     'htmlOptions'=>array(
         'data-action'=>$action,

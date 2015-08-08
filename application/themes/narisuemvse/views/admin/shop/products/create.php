@@ -60,7 +60,7 @@
                 'model' => $XUploadForm,
                 'attribute' => 'file',
                 'multiple' => true,
-                'formView' => Yii::app()->theme->baseUrl.'/views/admin/shop/products/form_upload.php',
+                'formView' => 'form_upload',
             ));?>
 
             <div id="images-block" class="files photo-list row clearfix">

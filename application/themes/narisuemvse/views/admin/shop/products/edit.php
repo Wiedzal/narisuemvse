@@ -64,7 +64,7 @@
                 'model' => $XUploadForm,
                 'attribute' => 'file',
                 'multiple' => true,
-                'formView' => Yii::app()->theme->baseUrl.'/views/admin/shop/products/form_upload.php',
+                'formView' => 'form_upload',
             ));?>
 
             <div id="images-block" class="files photo-list row clearfix">
@@ -84,6 +84,62 @@
                     <? endforeach; ?>
                 <? endif; ?>
             </div>
+
+            
+            
+            
+            <hr class="mt30 mb30"/>
+
+            <h3 class="mb20">Загрузка удаленного изображения</h3>
+            
+            <?php $form=$this->beginWidget('CActiveForm', array(
+                'id'=>'remotefile-form',
+                'action'=> $this->createUrl('products/uploadFromUrl', array('id'=>$model->id)), 
+                'enableClientValidation'=>true,
+                'clientOptions'=>array(
+                    'validateOnSubmit'=>true,
+                    'afterValidate'=>'js: function(form, data, hasError) {
+                        if (!hasError) {
+                            var url = $("#remotefile-form").attr("action");
+                            console.log(url);
+                            $.ajax({
+                                type: "POST",
+                                dataType : "json",
+                                url: url,
+                                data: $("#remotefile-form").serialize(),
+                                beforeSend: function() {
+
+                                },
+                                success: function(data) {
+                                    if(data.error)
+                                    {
+                                        alert(data.error);
+                                        return;
+                                    }
+                                    console.log("ok");
+                                },
+                            });
+                            return false;
+                        }
+                    }'
+                ),
+                'stateful' => true,
+            ));?>
+            <div class="row form-group">
+                <div class="col-3 form-collabel">
+                    <?=Yii::t('app', 'Ссылка на изображение')?>
+                </div>
+                <div class="col-6">
+                    <?=$form->textField($RemoteFileForm,'remotefile', array('class' => 'form-input')); ?>
+                    <div class="form-error">
+                        <?=$form->error($RemoteFileForm,'remotefile');?>
+                    </div>
+                </div>
+                 <div class="col-2">
+                    <?=CHtml::submitButton(Yii::t('app', 'Загрузить'), array('class'=>'btn btn-success'));?>
+                </div>
+            </div>
+            <?php $this->endWidget(); ?>
 
         </div>
     </div>

@@ -22,30 +22,38 @@ class ProductsController extends AdminModuleController
 
     public function actionIndex()
     {
-        $this->breadcrumbs = array_merge($this->breadcrumbs, array(Yii::t('app', 'Управление товарами')));
         $this->pageTitle = Yii::t('app', 'Товары');
+        $this->breadcrumbs = array_merge($this->breadcrumbs, array(Yii::t('app', 'Управление товарами')));
 
         $model = new ShopProducts('search');
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['ShopProducts'])) {
+        $model->unsetAttributes();
+
+        if (isset($_GET['ShopProducts'])) 
+        {
             $model->attributes = $_GET['ShopProducts'];
         }
 
-        $this->render('index', array(
-            'model' => $model,
-        ));
+        if (isset($_GET['ajax'])) 
+        {
+            $this->renderPartial('_grid', array('model' => $model));
+        }
+        else 
+        {
+            $this->render('index', array('model' => $model));
+        }
     }
     
     public function actionCreate()
     {
-        $this->breadcrumbs = array_merge($this->breadcrumbs, array(Yii::t('app', 'Создание товара')));
         $this->pageTitle = Yii::t('app', 'Создание товара');
+        $this->breadcrumbs = array_merge($this->breadcrumbs, array(Yii::t('app', 'Создание товара')));
 
         $model = new ShopProducts();
-        
-        $params = Yii::app()->request->getPost('ShopProducts');
-        if (Yii::app()->request->isAjaxRequest && $params)
+
+        if (Yii::app()->request->isAjaxRequest && isset($_POST['ShopProducts']))
         {
+            $params = $_POST['ShopProducts'];
+            
             if($params['id'])
                 $model = ShopProducts::model()->findByPk($params['id']);
                 
@@ -56,34 +64,33 @@ class ProductsController extends AdminModuleController
             }
             else
             {
-                $model->attributes = Yii::app()->request->getPost('ShopProducts');
+                $model->attributes = $_POST['ShopProducts'];
                 $model->save();
-                echo CJSON::encode(array(
-                    'id' => $model->id
-                ));
+                echo CJSON::encode(array('id' => $model->id));
                 Yii::app()->end();
             }
         }
         
         $XUploadForm = new XUploadForm();
+        $RemoteFileForm = new RemoteFileForm();
         
         $this->render('create', array(
             'model' => $model,
             'XUploadForm' => $XUploadForm,
+            'RemoteFileForm' => $RemoteFileForm,
         ));
     }
     
     public function actionEdit($id)
     {
-        $this->pageTitle = Yii::t('app', 'Редактирование товара');
-
         $model = ShopProducts::model()->findByPk($id);
         if (!$model)
             throw new CHttpException(404, Yii::t('app', 'Товар не найден'));
-        
+
+        $this->pageTitle = 'Редактирование товара "' . $model->title . '"';
         $this->breadcrumbs = array_merge($this->breadcrumbs, array('Редактирование товара "' . $model->title . '"'));
 
-        if (Yii::app()->request->getPost('ShopProducts'))
+        if (isset($_POST['ShopProducts']))
         {
             if(isset($_POST['ajax']) && $_POST['ajax']==='product-form')
             {
@@ -92,30 +99,202 @@ class ProductsController extends AdminModuleController
             }
             else
             {
-                $model->attributes = Yii::app()->request->getPost('ShopProducts');
+                $model->attributes = $_POST['ShopProducts'];
                 $model->save();
-                echo CJSON::encode(array(
-                    'id' => $model->id
-                ));
+                echo CJSON::encode(array('id' => $model->id));
                 Yii::app()->end();
             }
         }
 
         $XUploadForm = new XUploadForm();
+        $RemoteFileForm = new RemoteFileForm();
         
         $this->render('edit', array(
             'model' => $model,
             'XUploadForm' => $XUploadForm,
+            'RemoteFileForm' => $RemoteFileForm,
         ));
     }
-   
+    
+    public function actionView($id)
+    {
+        $model = ShopProducts::model()->findByPk($id);
+        if (!$model)
+            throw new CHttpException(404, Yii::t('app', 'Товар не найден'));
+
+        $this->pageTitle = 'Просмотр товара "' . $model->title . '"';
+        $this->breadcrumbs = array_merge($this->breadcrumbs, array('Просмотр товара "' . $model->title . '"'));
+
+        $this->render('view', array('model' => $model));
+    }
+    
+    public function actionDelete($id)
+    {
+        if(Yii::app()->request->isPostRequest)
+        {
+            $model = ShopProducts::model()->findByPk($id);
+            $model->delete();
+     
+            if(!isset($_POST['ajax']))
+                $this->redirect(array('index'));
+        }
+        else
+            throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+    }
+
+    public function actionCsvdownload()
+    {
+        $model = new ShopProducts();
+        $columns = $model->getAvailableColumns();
+        $firstLine = array_values($columns);
+
+        $file = fopen('upload/example.csv', 'w');
+        fputcsv($file, $firstLine, ';');
+        fclose($file);
+        
+        $csvHandle = file_get_contents('upload/example.csv');
+        $csvHandle = iconv("UTF-8", "windows-1251", $csvHandle);
+        file_put_contents('upload/example.csv', $csvHandle);
+
+        header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+
+        header("Content-Disposition: attachment;filename=example.csv");
+        header("Content-Transfer-Encoding: binary");
+
+        readfile('upload/example.csv');
+
+        Yii::app()->end();
+    }
+    
+    public function actionImport()
+    {
+        $this->pageTitle = 'Импорт товаров';
+        $this->breadcrumbs = array_merge($this->breadcrumbs, array('Импорт товаров'));
+
+        $importCsvForm = new ImportCsvForm();
+        $errors = array();
+
+        if (isset($_POST['ImportCsvForm']))
+        {
+            $importCsvForm->attributes = $_POST['ImportCsvForm'];
+
+            if($importCsvForm->validate())
+            {
+                $model = new ShopProducts();
+                $columns = array_values(array_flip($model->getAvailableColumns()));
+                //var_dump($columns);die;
+                $csvFile = CUploadedFile::getInstance($importCsvForm, 'csvFile'); 
+                $csvFileTemp = $csvFile->getTempName();
+
+                $csvHandle = file_get_contents($csvFileTemp);
+                $csvHandle = iconv("WINDOWS-1251", "UTF-8", $csvHandle);
+                file_put_contents($csvFileTemp, $csvHandle);
+                
+                $csvHandle = fopen($csvFileTemp, "r");
+
+                $checkedLine = fgetcsv($csvHandle, 0, $importCsvForm->delimiter);
+                if(count($checkedLine) > count($columns))
+                {
+                    $importCsvForm->addError('csvFile', 'Неверная схема csv-документа');
+                    $errors[] = $importCsvForm;
+                    die('error');
+                }
+                
+                rewind($csvHandle);
+
+                while(($csvLine = fgetcsv($csvHandle, 0, $importCsvForm->delimiter)) !== FALSE)
+                {
+                    $i = 0;
+                    foreach($csvLine as $key=>$value) 
+                    {
+                        $data[$columns[$i]] = $value;
+                        $i++;
+                    }
+                    $csvDataArray[] = $data;
+                }
+                //var_dump($csvDataArray);die;
+                if($importCsvForm->skipFirstLine)
+                {
+                    unset($csvDataArray[0]);
+                }
+                //var_dump($csvDataArray);die;
+                foreach($csvDataArray as $attributes)
+                {
+                    $model = new ShopProducts('import');
+                    $model->attributes = $attributes;
+                    $model->category_id = $importCsvForm->categoryId;
+                    //var_dump($model->attributes);die;
+                    if(!$model->validate())
+                    {
+                        $errors[] = $model;
+                    }
+                    //var_dump($model->attributes);
+                    //var_dump($model->_remoteFile);
+                    //var_dump($model->getErrors());die;
+                }
+                
+                $transaction = Yii::app()->db->beginTransaction();
+                try 
+                {
+                    foreach($csvDataArray as $attributes)
+                    {
+                        $ShopProducts = new ShopProducts('import');
+                        $ShopProducts->attributes = $attributes;
+                        $ShopProducts->category_id = $importCsvForm->categoryId;
+                        if(!$ShopProducts->save())
+                        {
+                            throw new Exception('Ошибка при сохранении данных.');
+                        }
+                        
+                        $ShopProductsImages = new ShopProductsImages();
+                        $ShopProductsImages->createStorageIfNotExists();
+                
+                        $attr = $ShopProductsImages->uploadImageFromUrl($attributes['_remoteFile']);
+                        if(isset($attr['error']))
+                        {
+                            echo CJSON::encode(array('error'=>$attr['error']));
+                            Yii::app()->end();
+                        }
+                        //$ShopProductsImages->validate();
+                        //var_dump($ShopProductsImages->getErrors());die;
+                        $ShopProductsImages->attributes = $attr;
+                        $ShopProductsImages->product_id = $ShopProducts->id;
+                       // var_dump($ShopProductsImages->save());die;
+                        if(!$ShopProductsImages->save())
+                        {
+                            throw new Exception('Ошибка при сохранении данных.');
+                        }
+                    }
+                    $transaction->commit();
+                }
+                catch(Exception $e) 
+                {
+                    $error = $e->getMessage();
+                    $transaction->rollBack();
+                }
+                
+                //var_dump($error);
+                die;
+                
+                $this->redirect(array('import'));
+            }
+        }
+        $this->render('import', array(
+            'model' => $importCsvForm, 
+            'errors' => $errors,
+        ));
+    }
+
     public function actionAjaxDeleteImage() 
     {
-        if(Yii::app()->request->isAjaxRequest && isset($_POST))
+        if(Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest)
         {
             $id = Yii::app()->request->getPost('id');
             
-            $model = ShopProductsImages::model()->find('id=:id',array('id'=>$id));
+            $model = ShopProductsImages::model()->findByPk($id);
             if($model == NULL)
             {
                 echo CJSON::encode(array(
@@ -146,10 +325,10 @@ class ProductsController extends AdminModuleController
     
     public function actionAjaxUpdateMainImage() 
     {
-        if(Yii::app()->request->isAjaxRequest && isset($_POST))
+        if(Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest)
         {
             $id = Yii::app()->request->getPost('id');
-            $model = ShopProductsImages::model()->find('id=:id',array('id'=>$id));
+            $model = ShopProductsImages::model()->findByPk($id);
             if(!$model->updateOwnerMainImage())
             {
                 echo CJSON::encode(array(
@@ -168,10 +347,10 @@ class ProductsController extends AdminModuleController
     
     public function actionAjaxClearMainImage() 
     {
-        if(Yii::app()->request->isAjaxRequest && isset($_POST))
+        if(Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest)
         {
             $id = Yii::app()->request->getPost('id');
-            $model = ShopProducts::model()->find('id=:id',array('id'=>$id));
+            $model = ShopProducts::model()->findByPk($id);
             if($model == NULL)
             {
                 echo CJSON::encode(array(
@@ -184,111 +363,135 @@ class ProductsController extends AdminModuleController
             $model->main_image_id = NULL;
             $model->save();
             
-            echo CJSON::encode(array(
-                'status' => TRUE,
-            ));
+            echo CJSON::encode(array('status' => TRUE));
             Yii::app()->end();
         }
     }
     
+    public function actionUploadFromUrl($id) 
+    {
+        if(Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest)
+        {
+            $params = Yii::app()->request->getPost('RemoteFileForm');
+            if(!$params)
+            {
+                echo CJSON::encode(array('error'=>Yii::t('app', 'Не удается выполнить операцию. Обновите страницу и попробуйте ещё раз.')));
+                Yii::app()->end();
+            }
+            
+            $product = ShopProducts::model()->findByPk($id);
+            if(!$product)
+            {
+                echo CJSON::encode(array('error'=>Yii::t('app', 'Не удается найти товар.')));
+                Yii::app()->end();
+            }
+
+            $model = new ShopProductsImages();
+            
+            $model->product_id = $id;
+            $attributes = $model->uploadImageFromUrl($params['remotefile']);
+            if(isset($attributes['error']))
+            {
+                echo CJSON::encode(array('error'=>$attributes['error']));
+                Yii::app()->end();
+            }
+            //var_dump($attributes)die;
+            $model->attributes = $attributes;
+            if(!$model->save())
+            {
+                echo CJSON::encode(array('error'=>Yii::t('app', 'Ошибка при сохранении данных.')));
+                Yii::app()->end();
+            }
+            echo CJSON::encode(array('error'=>false));
+            Yii::app()->end();
+        }
+        echo CJSON::encode(array('error'=>Yii::t('app', 'Некорректный запрос.')));
+        Yii::app()->end();
+    }
+    
     public function actionUpload() 
     {
-        //Here we define the paths where the files will be stored
-        $path = Yii::getPathOfAlias('webroot').'/upload/products_picture/';
-        $publicPath = Yii::getPathOfAlias('webroot').'/upload/products_picture/thumbs/';
-        $thumbnailPath = '/upload/products_picture/thumbs/';
-       
-        if (!is_dir($path))
-        {
-            mkdir($path, 0777, true);
-        }
-        if (!is_dir($publicPath))
-        {
-            mkdir($publicPath, 0777, true);
-        }
-        //This is for IE which doens't handle 'Content-type: application/json' correctly
+        $model = new ShopProductsImages();
+        
         header('Vary: Accept');
         if(isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false))
         {
             header('Content-type: application/json');
-        } else 
+        } 
+        else 
         {
             header('Content-type: text/plain');
         }
-     
 
         if(!isset($_GET["id"])) 
         {
             throw new CHttpException(500, "Ошибка запроса. Обновите страницу и попробуйте ещё раз");
         }
-        $model = new XUploadForm;
+        $XUploadForm = new XUploadForm;
         
-        $fileValidator = CValidator::createValidator('FileValidator', $model, 'file', 
+        $fileValidator = CValidator::createValidator('FileValidator', $XUploadForm, 'file', 
             array(
-                'maxSize'=>5242880,
-                'types'=>'jpg,jpeg,png,gif,bmp',
-                'mimeTypes'=>'image/jpeg,image/png,image/gif,image/bmp',
+                'maxSize'=>$model->maxSize,
+                'types'=>$model->fileTypes,
+                'mimeTypes'=>$model->mimeTypes,
                 'tooLarge'=>Yii::t('yii','Размер файла "{file}" слишком велик, он не должен превышать 5MB.'),
             ));
-        $model->validatorList->add($fileValidator);
+        $XUploadForm->validatorList->add($fileValidator);
         
-        $model->file = CUploadedFile::getInstance($model, 'file');
-        //We check that the file was successfully uploaded
-        if($model->file !== null) 
-        {
-            //Grab some data
-            $model->mime_type = $model->file->getType();
-            $model->size = $model->file->getSize();
-            $model->name = $model->file->getName();
-            //(optional) Generate a random name for our file
-            $filename = md5(Yii::app()->user->id . microtime() . $model->name);
-            $filename .= "." . $model->file->getExtensionName();
-            if($model->validate())
-            {
-                //Move our file to our temporary dir
-                $model->file->saveAs($path.$filename);
-                chmod($path.$filename, 0777);
-                //here you can also generate the image versions you need 
-                //using something like PHPThumb
-                Yii::app()->simpleImage
-                    ->load($path.$filename)
-                    ->thumbnail(300,200)->save($publicPath.$filename);
+        $XUploadForm->file = CUploadedFile::getInstance($XUploadForm, 'file');
 
-                $shopProductsImages = new ShopProductsImages();
-                $shopProductsImages->product_id = $_GET["id"];
-                $shopProductsImages->mime_type = $model->mime_type;
-                $shopProductsImages->file_name = $filename;
-                $shopProductsImages->file_size = $model->size;
-                $shopProductsImages->orig_name = $model->name;
+        if($XUploadForm->file !== null) 
+        {
+            $XUploadForm->mime_type = $XUploadForm->file->getType();
+            $XUploadForm->size = $XUploadForm->file->getSize();
+            $XUploadForm->name = $XUploadForm->file->getName();
+
+            $fileSaveName = md5(Yii::app()->user->id . microtime() . $XUploadForm->name);
+            $fileSaveName .= "." . $XUploadForm->file->getExtensionName();
+            
+            $model->imageBehaviorAttribute = $fileSaveName;
+            
+            if($XUploadForm->validate())
+            {
+                $model->createStorageIfNotExists();
                 
-                if(!$shopProductsImages->save())
+                $XUploadForm->file->saveAs($model->savePathAlias . '/' . $fileSaveName);
+
+                $model->createThumbnailForImage($fileSaveName);
+                
+                $model->mime_type = $XUploadForm->mime_type;
+                $model->file_size = $XUploadForm->size;
+                $model->orig_name = $XUploadForm->name;
+                $model->file_name = $fileSaveName;
+                $model->product_id = $_GET["id"];
+                
+                if(!$model->save())
                     throw new CHttpException( 500, "Ошибка при сохранении данных");
 
                 echo json_encode(array(array(
-                        "id" => $shopProductsImages->id,
-                        "name" => $model->name,
-                        "type" => $model->mime_type,
-                        "size" => $model->size,
-                        "url" => '/upload/products_picture/'.$filename,
-                        "thumbnail_url" => $thumbnailPath."$filename",
-                        "delete_url" => $this->createUrl("upload", array(
-                            "_method" => "delete",
-                            "file" => $filename
-                        )),
-                        "delete_type" => "POST"
-                    )));
+                    "id" => $model->id,
+                    "name" => $XUploadForm->name,
+                    "type" => $XUploadForm->mime_type,
+                    "size" => $XUploadForm->size,
+                    "url" => $model->imageUrl,
+                    "thumbnail_url" => $model->imageThumbUrl,
+                    "delete_url" => $this->createUrl("upload", array(
+                        "_method" => "delete",
+                        "file" => $fileSaveName
+                    )),
+                    "delete_type" => "POST"
+                )));
             }
             else
             {
-                //If the upload failed for some reason we log some data and let the widget know
-                echo json_encode(array( 
-                    array( "error" => $model->getErrors('file'),
+                echo json_encode(array(
+                    array( "error" => $XUploadForm->getErrors('file'),
                 )));
-                Yii::log( "XUploadAction: ".CVarDumper::dumpAsString( $model->getErrors()),
+                Yii::log( "XUploadAction: ".CVarDumper::dumpAsString($XUploadForm->getErrors()),
                     CLogger::LEVEL_ERROR, "xupload.actions.XUploadAction" 
                 );
             }
-        } 
+        }
         else
         {
             throw new CHttpException(500, "Не удалось загрузить файл");

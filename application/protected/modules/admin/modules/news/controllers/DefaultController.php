@@ -36,9 +36,9 @@ class DefaultController extends AdminModuleController
 
         $model = new News();
 
-        if (!empty($_POST) && array_key_exists('News', $_POST))
+        if (Yii::app()->request->getPost('News'))
         {
-            $model->attributes = $_POST['News'];
+            $model->attributes = Yii::app()->request->getPost('News');
 
             if ($model->validate())
             {

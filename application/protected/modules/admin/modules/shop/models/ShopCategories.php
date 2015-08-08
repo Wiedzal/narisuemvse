@@ -372,8 +372,8 @@ class ShopCategories extends ActiveRecord
         return implode(array_reverse($uri), $separator);
     }
     /**
-     * Подготовливает массив хдебных крошек для zii.widgets.CBreadcrumbs
-     * @param bool $lastLink отоюражение последнего элемента (true - активная ссылка)
+     * Подготовливает массив хлебных крошек для zii.widgets.CBreadcrumbs
+     * @param bool $lastLink отображение последнего элемента (true - активная ссылка)
      * @return array
      */
     public function getBreadcrumbs($lastLink=false)

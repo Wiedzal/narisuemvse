@@ -18,6 +18,7 @@
  */
 class ShopProductsImages extends ActiveRecord
 {
+    public $imageBehaviorAttribute;
     /**
      * @return string the associated database table name
      */
@@ -41,7 +42,7 @@ class ShopProductsImages extends ActiveRecord
             array('created_at, modified_at', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, product_id, is_remote_file, mime_type, file_name, file_size, orig_name, created_at, created_by, modified_at, modified_by', 'safe', 'on'=>'search'),
+            array('id, product_id, is_remote_file, mime_type, file_name, file_size, orig_name, created_at, created_by, modified_at, modified_by', 'safe', 'on'=>'search,create'),
         );
     }
 
@@ -122,13 +123,19 @@ class ShopProductsImages extends ActiveRecord
     {
         return parent::model($className);
     }
+    
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->imageBehaviorAttribute = $this->file_name;
+    }
 
     public function behaviors()
     {
         return array(
             'imageBehavior' => array(
                 'class' => 'ImageBehavior',
-                'attributeName' => 'file_name',
+                'attributeName' => 'imageBehaviorAttribute',
                 'savePathAlias' => 'upload/products_picture',
                 'thumbnailPathAlias' => 'upload/products_picture/thumbs',
             ),
